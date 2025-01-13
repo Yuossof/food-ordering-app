@@ -13,12 +13,20 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import Image from 'next/image'
 import { Label } from '../ui/label'
+import { fromatCurrency } from '@/lib/formatters'
+import { Checkbox } from '../ui/checkbox'
 
 const sizes = [
-    { id: crypto.randomUUID, name: "Small", price: 0 },
-    { id: crypto.randomUUID, name: "Medium", price: 4 },
-    { id: crypto.randomUUID, name: "Small", price: 8 },
+    { id: crypto.randomUUID(), name: "Small", price: 0 },
+    { id: crypto.randomUUID(), name: "Medium", price: 4 },
+    { id: crypto.randomUUID(), name: "Small", price: 8 },
 
+]
+
+const extras = [
+    { id: crypto.randomUUID(), name: "Cheese", price: 3 },
+    { id: crypto.randomUUID(), name: "Onion", price: 1 },
+    { id: crypto.randomUUID(), name: "Tomato", price: 2 },
 ]
 
 function AddToCartButton({ item }: { item: any }) {
@@ -38,14 +46,15 @@ function AddToCartButton({ item }: { item: any }) {
                 <div className="space-y-10">
                     <div className='space-y-4 text-center'>
                         <Label htmlFor='pick-size'>Pick your size</Label>
-                        <PickSize sizes={sizes} />
+                        <PickSize sizes={sizes} item={item} />
                     </div>
-                    <div>
-                        Size
+                    <div className='space-y-4 text-center'>
+                        <Label>Any extras?</Label>
+                        <Extras extras={extras} item={item} />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button type="submit" className='w-full h-10'>Add to cart </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -55,24 +64,31 @@ function AddToCartButton({ item }: { item: any }) {
 
 
 
-function PickSize({ sizes }: { sizes: any }) {
+function PickSize({ sizes, item }: { sizes: any, item: any }) {
 
     return (
         <RadioGroup defaultValue="comfortable">
-            <div className="flex items-center space-x-2">
-                <RadioGroupItem value="default" id="r1" />
-                <Label htmlFor="r1">Default</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-                <RadioGroupItem value="comfortable" id="r2" />
-                <Label htmlFor="r2">Comfortable</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-                <RadioGroupItem value="compact" id="r3" />
-                <Label htmlFor="r3">Compact</Label>
-            </div>
+            {sizes.map((size) => (
+                <label htmlFor={size.id} key={size.id} className="flex items-center space-x-2 p-4 border-gray-200 border-2 rounded-md">
+                    <RadioGroupItem value="default" id={size.id} />
+                    <Label htmlFor={size.id}>{size.name} {fromatCurrency(size.price + item.basePrice)}</Label>
+                </label>
+            ))}
         </RadioGroup>
     )
 }
+
+function Extras({ extras, item }: { extras: any, item: any }) {
+
+    return (
+        extras.map((extra) => (
+            <label htmlFor={extra.id} key={extra.id} className='flex items-center space-x-2 p-4 border-gray-200 border-2 rounded-md mt-2'>
+                <Checkbox id={extra.id} />
+                <label htmlFor={extra.id} className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed'>{extra.name} {fromatCurrency(extra.price + item.basePrice)}</label>
+            </label>
+        ))
+    )
+}
+
 
 export default AddToCartButton

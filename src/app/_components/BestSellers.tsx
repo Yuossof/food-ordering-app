@@ -1,17 +1,10 @@
 import MainHeading from '@/components/main-heading/MainHeading'
 import Menu from '@/components/menu/Menu'
-
+import { db } from '@/lib/prisma'
 import React from 'react'
 
-function BestSellers() {
-    const bestSeller = [
-        { id: crypto.randomUUID(), name: "Pizza 1", description: "this is a pizza", basePrice: 12, image: "/assets/images/pizza.png" },
-        { id: crypto.randomUUID(), name: "Pizza 1", description: "this is a pizza", basePrice: 12, image: "/assets/images/pizza.png" },
-        { id: crypto.randomUUID(), name: "Pizza 1", description: "this is a pizza", basePrice: 12, image: "/assets/images/pizza.png" },
-        { id: crypto.randomUUID(), name: "Pizza 1", description: "this is a pizza", basePrice: 12, image: "/assets/images/pizza.png" },
-        { id: crypto.randomUUID(), name: "Pizza 1", description: "this is a pizza", basePrice: 12, image: "/assets/images/pizza.png" },
-        { id: crypto.randomUUID(), name: "Pizza 1", description: "this is a pizza", basePrice: 12, image: "/assets/images/pizza.png" },
-    ]
+async function BestSellers() {
+    const bestSeller = await db.product.findMany()
 
     return (
         <section className='w-full flex justify-center section-gap'>
